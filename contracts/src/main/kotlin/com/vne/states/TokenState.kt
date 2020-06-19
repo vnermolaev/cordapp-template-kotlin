@@ -17,6 +17,7 @@ class TokenState(val issuer: Party, val holder: Party, quantity: Long) : Contrac
 
     init {
         require(quantity > 0) { "Only positive quantities are allowed" }
+        require(issuer != holder) { "Cannot issue to itself" }
         this.quantity = quantity
     }
 }
