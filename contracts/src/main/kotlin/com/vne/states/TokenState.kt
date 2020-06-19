@@ -9,15 +9,15 @@ import net.corda.core.identity.Party
 // * State *
 // *********
 @BelongsToContract(TokenContract::class)
-class TokenState(private val issuer: Party, private val holder: Party, quantity: Long) : ContractState {
+class TokenState(val issuer: Party, val holder: Party, quantity: Long) : ContractState {
     val quantity: Long
 
     // Prevent mutation of the participants list.
     override val participants get() = listOf(holder)
 
     init {
-        if (quantity < 0) {
-            throw Error("Only non negative quantities are allowed")
+        if (quantity <= 0) {
+            throw Error("Only positive quantities are allowed")
         }
 
         this.quantity = quantity
