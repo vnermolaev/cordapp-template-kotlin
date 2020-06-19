@@ -16,10 +16,7 @@ class TokenState(val issuer: Party, val holder: Party, quantity: Long) : Contrac
     override val participants get() = listOf(holder)
 
     init {
-        if (quantity <= 0) {
-            throw Error("Only positive quantities are allowed")
-        }
-
+        require(quantity > 0) { "Only positive quantities are allowed" }
         this.quantity = quantity
     }
 }

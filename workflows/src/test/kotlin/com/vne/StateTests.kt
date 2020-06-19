@@ -9,7 +9,7 @@ class StateTests {
     private val airline = TestIdentity(CordaX500Name("EZFly", "London", "GB"))
     private val alice = TestIdentity(CordaX500Name("Alice", "New York", "US"))
 
-    @Test(expected = Error::class)
+    @Test(expected = IllegalArgumentException::class)
     fun `state does not accept negative quantities`() {
         TokenState(airline.party, alice.party, -100)
     }
