@@ -5,15 +5,11 @@ import com.vne.contracts.TokenContract
 import com.vne.states.TokenState
 import net.corda.core.contracts.Command
 import net.corda.core.flows.*
-import net.corda.core.identity.Party
-import net.corda.core.node.StatesToRecord
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 
 object IssueFlow {
-    data class Acquirer(val party: Party, val quantity: Long)
-
     @InitiatingFlow
     @StartableByRPC
     class Initiator(acquirers: List<Acquirer>) : FlowLogic<SignedTransaction>() {
@@ -57,7 +53,7 @@ object IssueFlow {
             val notary = serviceHub.networkMapCache.notaryIdentities.first()
             val txBuilder = TransactionBuilder(notary)
                 .addCommand(Command(TokenContract.Commands.Issue(), issuer.owningKey))
-            acquirers.map { txBuilder.addOutputState(TokenState(issuer, it.party, it.quantity)) }
+                .addOutputStates(acquirers.map { TokenState(issuer, it.party, it.quantity) })
 
             // Verify.
             progressTracker.currentStep = VERIFYING_TRANSACTION
@@ -72,7 +68,6 @@ object IssueFlow {
             progressTracker.currentStep = FINALISING_TRANSACTION
             val counterPartiesFlows = acquirers.map { it.party }
                 .distinct()
-                .minus(issuer)
                 .map { initiateFlow(it) }
 
 

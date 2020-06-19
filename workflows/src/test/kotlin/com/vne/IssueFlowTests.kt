@@ -1,5 +1,6 @@
 package com.vne
 
+import com.vne.flows.Acquirer
 import com.vne.flows.IssueFlow
 import net.corda.core.utilities.getOrThrow
 import net.corda.testing.core.singleIdentity
@@ -10,7 +11,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class FlowTests {
+class IssueFlowTests {
     private val network = MockNetwork(
         MockNetworkParameters(cordappsForAllNodes = listOf(
             TestCordapp.findCordapp("com.vne.contracts"),
@@ -18,13 +19,11 @@ class FlowTests {
         )))
 
     private val airline = network.createNode()
-    private val airlineParty = airline.info.singleIdentity()
 
     private val alice = network.createNode()
     private val aliceParty = alice.info.singleIdentity()
 
     private val bob = network.createNode()
-    private val bobParty = bob.info.singleIdentity()
 
     init {
         listOf(airline, alice, bob).forEach {
@@ -42,7 +41,7 @@ class FlowTests {
 
     @Test
     fun `Valid transaction receives all signatures`() {
-        val acquirer = IssueFlow.Acquirer(aliceParty, 25L)
+        val acquirer = Acquirer(aliceParty, 25L)
         val flow = IssueFlow.Initiator(listOf(acquirer))
         val fut = airline.startFlow(flow)
         network.runNetwork()
