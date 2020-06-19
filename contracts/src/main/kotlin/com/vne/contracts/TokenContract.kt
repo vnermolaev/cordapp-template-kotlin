@@ -48,6 +48,7 @@ class TokenContract : Contract {
                 }
             }
             is Commands.Redeem ->
+                // For simplicity only allow consuming full amounts of tokens.
                 requireThat {
                     "Redeeming must consume states" using ins.isNotEmpty()
                     "Redeeming must not produce new states" using outs.isEmpty()
